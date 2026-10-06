@@ -1,6 +1,5 @@
 node_modules
-.next
-out
+dist
 .git
 .env
 npm-debug.log*

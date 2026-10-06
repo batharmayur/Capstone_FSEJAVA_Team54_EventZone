@@ -2,12 +2,12 @@
 
 This project is organized into two separate services:
 
-- `eventzone-frontend/` — Next.js user interface for attendee, organiser, and admin dashboard
+- `eventzone-frontend/` — React user interface for attendee, organiser, and admin dashboard
 - `eventzone-backend/` — Spring Boot API service for event catalog, ticket booking, and business logic
 
 ## Tech Stack
 
-- Frontend: Next.js, TypeScript, Tailwind CSS
+- Frontend: React, Vite, TypeScript, Tailwind CSS
 - Backend: Java 17, Spring Boot 3, Spring Web, Spring Data JPA
 - Database: PostgreSQL
 - Dev tooling: Docker Compose, Maven, Spring Boot
@@ -22,7 +22,6 @@ This project is organized into two separate services:
 
 ```bash
 cd eventzone-frontend
-cp .env.example .env
 npm install
 npm run dev
 ```
@@ -32,6 +31,8 @@ Frontend runs at:
 ```bash
 http://localhost:3000
 ```
+
+Frontend reads the backend API from `VITE_API_BASE_URL` when provided. During local development, `/api/*` requests are proxied to `http://localhost:8080` by Vite.
 
 ## Backend Setup
 

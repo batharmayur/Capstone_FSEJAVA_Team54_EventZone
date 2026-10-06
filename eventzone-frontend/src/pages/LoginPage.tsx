@@ -1,66 +1,75 @@
-import { FormEvent } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, type FormEvent } from 'react';
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
+import Navbar from '../components/Navbar';
+import { useAuth } from '../context/AuthContext';
+
+interface LocationState {
+  from?: { pathname: string };
+}
+
+const inputClass =
+  'w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-800 outline-none transition focus:border-brand-300 focus:bg-white';
 
 export default function LoginPage() {
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  const { user, login } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const redirectTo = (location.state as LocationState | null)?.from?.pathname ?? '/';
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+
+  if (user) {
+    return <Navigate to={redirectTo} replace />;
+  }
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setError(null);
+    setSubmitting(true);
+    try {
+      await login(email, password);
+      navigate(redirectTo, { replace: true });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unable to sign in. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-100 px-6 py-12">
-      <div className="grid w-full max-w-5xl overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-soft lg:grid-cols-2">
-        <div className="bg-gradient-to-br from-brand-600 to-brand-800 p-10 text-white">
-          <p className="mb-6 text-sm uppercase tracking-[0.2em] text-brand-100">Secure portal</p>
-          <h1 className="text-4xl font-black">EventZone</h1>
-          <p className="mt-6 text-brand-100">
-            Manage ticketing, approvals, schedules, and event milestones from one trusted workspace.
-          </p>
-          <div className="mt-10 rounded-2xl bg-white/10 p-5 backdrop-blur-sm">
-            <p className="text-sm text-brand-100">Active events</p>
-            <p className="mt-3 text-3xl font-bold">128 active</p>
+    <div className="min-h-screen">
+      <Navbar />
+      <main className="mx-auto flex max-w-md flex-col px-6 py-12">
+        <h1 className="text-3xl font-bold text-slate-900">Welcome back</h1>
+        <p className="mt-2 text-slate-600">Sign in to book tickets and manage your bookings.</p>
+
+        <form className="card-surface mt-8 space-y-5 p-6" onSubmit={handleSubmit} noValidate>
+          {error && (
+            <div role="alert" className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+              {error}
+            </div>
+          )}
+          <div>
+            <label htmlFor="email" className="mb-2 block text-sm font-medium text-slate-700">Email address</label>
+            <input id="email" type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} className={inputClass} />
           </div>
-        </div>
-
-        <div className="p-8 md:p-10">
-          <div className="mb-8">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-brand-700">Login</p>
-            <h2 className="mt-2 text-3xl font-bold text-slate-900">Welcome back</h2>
+          <div>
+            <label htmlFor="password" className="mb-2 block text-sm font-medium text-slate-700">Password</label>
+            <input id="password" type="password" autoComplete="current-password" required value={password} onChange={(e) => setPassword(e.target.value)} className={inputClass} />
           </div>
+          <button type="submit" className="btn-primary w-full disabled:opacity-60" disabled={submitting || !email || !password}>
+            {submitting ? 'Signing in...' : 'Sign in'}
+          </button>
+        </form>
 
-          <form className="space-y-5" onSubmit={handleSubmit}>
-            <div>
-              <label className="mb-2 block text-sm font-medium text-slate-700" htmlFor="email">Email address</label>
-              <input
-                id="email"
-                type="email"
-                defaultValue="organiser@eventzone.dev"
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-800 outline-none ring-0 transition focus:border-brand-300 focus:bg-white"
-              />
-            </div>
-            <div>
-              <label className="mb-2 block text-sm font-medium text-slate-700" htmlFor="password">Password</label>
-              <input
-                id="password"
-                type="password"
-                defaultValue="password123"
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-800 outline-none ring-0 transition focus:border-brand-300 focus:bg-white"
-              />
-            </div>
-            <div className="flex items-center justify-between text-sm text-slate-500">
-              <label className="inline-flex items-center gap-2">
-                <input type="checkbox" className="h-4 w-4 rounded border-slate-300" />
-                Remember me
-              </label>
-              <Link to="/" className="font-medium text-brand-700">Forgot password?</Link>
-            </div>
-            <button type="submit" className="btn-primary w-full">Sign in</button>
-          </form>
-
-          <p className="mt-6 text-center text-sm text-slate-500">
-            Need an account? <Link to="/" className="font-medium text-brand-700">Request access</Link>
-          </p>
-        </div>
-      </div>
-    </main>
+        <p className="mt-6 text-center text-sm text-slate-500">
+          New to EventZone?{' '}
+          <Link to="/register" state={location.state} className="font-medium text-brand-700">Create an account</Link>
+        </p>
+      </main>
+    </div>
   );
 }

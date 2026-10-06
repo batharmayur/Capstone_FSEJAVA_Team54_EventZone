@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" role="img" aria-label="Football championship">
+  <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#16a34a"/><stop offset="1" stop-color="#14532d"/></linearGradient></defs>
+  <rect width="600" height="400" fill="url(#g)"/>
+  <g fill="none" stroke="#fff" stroke-width="4" opacity="0.5">
+    <rect x="40" y="40" width="520" height="320"/>
+    <line x1="300" y1="40" x2="300" y2="360"/>
+    <circle cx="300" cy="200" r="55"/>
+  </g>
+  <text x="300" y="215" text-anchor="middle" font-family="Arial, sans-serif" font-size="54" font-weight="700" fill="#fff">Sports</text>
+</svg>

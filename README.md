@@ -72,11 +72,11 @@ Backend runs at `http://localhost:8080` (health check: `http://localhost:8080/ap
 
 ```bash
 cd eventzone-backend && mvn test       # 71 tests: unit (JUnit 5 + Mockito) and API (MockMvc) tests on H2
-cd eventzone-frontend && npm test      # 12 tests: Vitest + Testing Library (booking form, role-gated routes)
+cd eventzone-frontend && npm test      # 23 tests: Vitest + Testing Library (booking form, role-gated routes, profile menu)
 cd eventzone-frontend && npm run build # type-checks and builds the UI
 ```
 
-Backend tests cover the services' business rules, role and ownership checks, validation, the error format, and a concurrency test that fires 10 simultaneous bookings at 3 seats. Frontend tests cover the booking form (available categories, quantity limits, total, success, server error, expired session, sold out) and the role-based route guard.
+Backend tests cover the services' business rules, role and ownership checks, validation, the error format, and a concurrency test that fires 10 simultaneous bookings at 3 seats. Frontend tests cover the booking form (available categories, quantity limits, total, success, server error, expired session, sold out) and the role-based route guard, and the profile dropdown (open/close, keyboard navigation, role-specific links, logout).
 
 ## Seed Data
 
@@ -109,7 +109,7 @@ Categories: Concert, Sports, Workshop, Conference. Six upcoming events (dates ar
 - `POST /api/auth/logout` → 204. Tokens are stateless, so the client discards its token.
 - Send the token as `Authorization: Bearer <token>`. Public endpoints: `GET /api/events`, `/api/events/{id}`, `/api/categories`, `/api/health`, and the auth endpoints above. Everything else requires a valid token (401 otherwise).
 - Passwords are hashed with BCrypt (8-72 characters). Emails are stored lowercase.
-- Frontend: `/login` and `/register` pages, `AuthContext` (session kept in `localStorage`, cleared on expiry), and a navbar that shows the signed-in user.
+- Frontend: `/login` and `/register` pages, `AuthContext` (session kept in `localStorage`, cleared on expiry), and a navbar profile dropdown (avatar, name, email and role, plus My events / Admin panel by role, My bookings and Log out; keyboard accessible).
 
 **Demo accounts:** see [Seed Data](#seed-data).
 
@@ -154,7 +154,7 @@ Not implemented: deactivating users (the spec lists it under the admin role but 
 - Events with bookings cannot be deleted, so booking history stays intact; admins deactivate them instead.
 - Prices are shown in INR and event times are local date-times without a time zone.
 - Sample cover images are local SVGs served by the frontend; organisers can supply any http(s) URL or site-relative path.
-- Frontend tests are limited to the two key components (booking form, route guard), as the spec asks; there are no end-to-end browser tests.
+- Frontend tests are limited to key components (booking form, route guard, profile menu); there are no end-to-end browser tests.
 
 ## Generative AI Usage
 

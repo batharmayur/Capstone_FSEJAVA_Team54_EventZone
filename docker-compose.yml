@@ -3,12 +3,12 @@ version: '3.9'
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: capstone-postgres
+    container_name: eventzone-postgres
     restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: capstoneflow
+      POSTGRES_DB: eventzone
     ports:
       - '5432:5432'
     volumes:

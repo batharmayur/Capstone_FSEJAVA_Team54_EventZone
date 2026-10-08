@@ -20,6 +20,53 @@ This project is organized into two separate services:
 - `postman/` — Postman collection covering every endpoint (49 requests, 82 assertions)
 - `docker-compose.yml` — PostgreSQL instance for local development
 
+## Prerequisites (Required Software)
+
+Install these before running the project.
+
+| Software | Version | Needed for |
+| --- | --- | --- |
+| **JDK** (Java Development Kit) | 17 or newer (the project targets Java 17; tests have also been run on JDK 25) | Backend |
+| **Apache Maven** | 3.6.3 or newer (3.9+ recommended) | Building and running the backend |
+| **Node.js** (includes npm) | 18 or newer (20 LTS recommended) | Frontend, frontend tests, `npx newman` |
+| **Git** | any recent version | Cloning the repository |
+| **Docker Desktop** (Docker Engine with Compose v2) | any recent version | *Optional*: only for the PostgreSQL option (Option B) |
+| **Postman** | any recent version | *Optional*: running the API collection in the app instead of `npx newman` |
+
+A modern browser (Chrome, Edge, Firefox or Safari) is needed to use the UI. Free ports: `3000` (UI), `8080` (API) and, for Option B only, `5432` (PostgreSQL). No separate database installation is needed for Option A, which uses in-memory H2.
+
+**Install on macOS (Homebrew):**
+
+```bash
+brew install openjdk@17 maven node git
+brew install --cask docker   # optional, for PostgreSQL via Docker
+```
+
+Homebrew's `openjdk@17` is not linked automatically; follow the "symlink" or `JAVA_HOME` hint that `brew` prints after installing.
+
+**Install on Ubuntu/Debian:**
+
+```bash
+sudo apt update && sudo apt install -y openjdk-17-jdk maven git
+# Node.js 20 LTS: install with nvm (https://github.com/nvm-sh/nvm), then:
+nvm install 20
+```
+
+**Windows:** install a JDK 17+ (for example Eclipse Temurin), Maven, Node.js LTS, Git and (optionally) Docker Desktop from their official installers, or through a package manager such as Chocolatey or Scoop. Make sure `JAVA_HOME` points to the JDK and that `mvn`, `node` and `npm` are on your `PATH`.
+
+**Verify the installation:**
+
+```bash
+java -version      # 17 or newer
+mvn -v             # 3.6.3 or newer (also shows which Java Maven uses)
+node -v            # v18 or newer
+npm -v
+git --version
+docker --version && docker compose version   # optional
+```
+
+`mvn -v` prints the Java version Maven itself runs with. It follows `JAVA_HOME`, so it can differ from `java -version`; check that it is 17 or newer. Backend and frontend libraries (Spring Boot, React, Vite, Tailwind and so on) are downloaded automatically by Maven and npm, so they need no manual install; an internet connection is required the first time.
+
 ## Frontend Setup
 
 ```bash
@@ -58,7 +105,7 @@ cd eventzone-backend
 mvn spring-boot:run
 ```
 
-The defaults in `eventzone-backend/src/main/resources/application.properties` match `docker-compose.yml`. Override with `DB_URL`, `DB_USERNAME`, `DB_PASSWORD`, `JWT_SECRET` and `JWT_EXPIRATION_MINUTES` as needed.
+The defaults in `eventzone-backend/src/main/resources/application.properties` match `docker-compose.yml` (database `eventzone`, user and password `postgres`, port 5432). If another PostgreSQL is already using port 5432, stop it or change the port mapping in `docker-compose.yml` and set `DB_URL` accordingly. Override with `DB_URL`, `DB_USERNAME`, `DB_PASSWORD`, `JWT_SECRET` and `JWT_EXPIRATION_MINUTES` as needed.
 
 Backend runs at `http://localhost:8080` (health check: `http://localhost:8080/api/health`).
 

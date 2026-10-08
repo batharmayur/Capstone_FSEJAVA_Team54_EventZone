@@ -1,4 +1,4 @@
-# EventZone Monorepo
+# EventZone
 
 This project is organized into two separate services:
 

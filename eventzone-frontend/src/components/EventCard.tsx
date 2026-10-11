@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import CoverImage from './CoverImage';
 import { formatDateTime, formatPrice } from '../utils/format';
 import type { EventSummary } from '../types/event';
+import EventTimer from './EventTimer';
 
 function priceLabel(minPrice: number | null) {
   if (minPrice === null) {
@@ -17,7 +18,12 @@ export default function EventCard({ event }: { event: EventSummary }) {
         <CoverImage src={event.coverImageUrl} alt={event.title} className="h-44 w-full object-cover" loading="lazy" />
         <div className="flex flex-1 flex-col gap-2 p-5">
           <span className="w-fit rounded-full bg-brand-50 px-2.5 py-1 text-xs font-medium text-brand-700">{event.category}</span>
-          <h3 className="text-lg font-semibold text-slate-900">{event.title}</h3>
+          
+          <div className="flex items-baseline justify-between gap-2">
+            <h3 className="text-lg font-semibold text-slate-900">{event.title}</h3>
+            <EventTimer targetDate={event.eventDate} />
+          </div>
+
           <p className="text-sm text-slate-600">{formatDateTime(event.eventDate)}</p>
           <p className="text-sm text-slate-600">{event.venue}</p>
           <p className="mt-auto pt-3 text-sm font-semibold text-slate-900">{priceLabel(event.minPrice)}</p>
